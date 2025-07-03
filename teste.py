@@ -1,4 +1,6 @@
+import streamlit as st
 import pandas as pd
+import plotly.express as px
 from datetime import timedelta
 
 # 1. Carrega o CSV (depois do upload no Colab)
