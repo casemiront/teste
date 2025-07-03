@@ -32,17 +32,32 @@ if file:
 
     df_vendas.loc[0, 'demanda_real'] = df_vendas.loc[0, 'total_venda_dia_kg']
 
-    # 6. Calcula previsão com média móvel de 3 dias
-    df_vendas['previsao_3dias'] = df_vendas['demanda_real'].rolling(window=3).mean()
+   # 6. Previsão de 3 dias (média móvel)
+df_vendas['previsao_3dias_kg'] = df_vendas['demanda_real'].rolling(window=3).mean()
 
-    # Gráfico da demanda real ao longo do tempo
-fig_demanda = px.line(df_vendas, x='data_dia', y='demanda_real', title='Demanda Real por Dia')
-st.plotly_chart(fig_demanda)
+# 7. Previsão diária simples (igual à demanda do dia anterior)
+df_vendas['previsao_dia_kg'] = df_vendas['demanda_real'].shift(1)
 
-# Gráfico da previsão de 3 dias
-fig_previsao = px.line(df_vendas, x='data_dia', y='previsao_3dias', title='Previsão de Demanda (Média Móvel de 3 dias)')
-st.plotly_chart(fig_previsao)
+# 8. Arredondar todas as colunas relevantes para 2 casas decimais
+colunas_kg = ['total_venda_dia_kg', 'remanescente', 'demanda_real', 'previsao_3dias_kg', 'previsao_dia_kg']
+df_vendas[colunas_kg] = df_vendas[colunas_kg].round(2)
 
-# Gráfico combinado de demanda real e previsão
-fig_combinado = px.line(df_vendas, x='data_dia', y=['demanda_real', 'previsao_3dias'], title='Demanda Real x Previsão')
-st.plotly_chart(fig_combinado)
+# 9. Renomear colunas para exibir "kg"
+df_exibir = df_vendas.rename(columns={
+    'demanda_real': 'Demanda Real (kg)',
+    'previsao_3dias_kg': 'Previsão 3 Dias (kg)',
+    'previsao_dia_kg': 'Previsão Diária (kg)',
+    'total_venda_dia_kg': 'Venda Real (kg)',
+    'remanescente': 'Remanescente (kg)'
+})
+
+# 10. Exibir tabela final
+st.subheader("📊 Tabela com Demanda e Previsões")
+st.dataframe(df_exibir[['data_dia', 'Venda Real (kg)', 'Remanescente (kg)', 'Demanda Real (kg)', 'Previsão Diária (kg)', 'Previsão 3 Dias (kg)']])
+
+# 11. Gráficos
+st.subheader("📈 Gráficos")
+
+fig_completo = px.line(df_exibir, x='data_dia', y=['Demanda Real (kg)', 'Previsão Diária (kg)', 'Previsão 3 Dias (kg)'],
+                       title='Demanda Real e Previsões (kg)')
+st.plotly_chart(fig_completo)
