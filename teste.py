@@ -51,13 +51,17 @@ df_exibir = df_vendas.rename(columns={
     'remanescente': 'Remanescente (kg)'
 })
 
-# 10. Exibir tabela final
-st.subheader("📊 Tabela com Demanda e Previsões")
-st.dataframe(df_exibir[['data_dia', 'Venda Real (kg)', 'Remanescente (kg)', 'Demanda Real (kg)', 'Previsão Diária (kg)', 'Previsão 3 Dias (kg)']])
+st.subheader("📈 Gráfico 1: Demanda Real (kg)")
+fig1 = px.line(df_exibir, x='data_dia', y='Demanda Real (kg)', markers=True,
+               title='Demanda Real por Dia (kg)')
+st.plotly_chart(fig1)
 
-# 11. Gráficos
-st.subheader("📈 Gráficos")
+st.subheader("📉 Gráfico 2: Previsão Diária (kg)")
+fig2 = px.line(df_exibir, x='data_dia', y='Previsão Diária (kg)', markers=True,
+               title='Previsão Diária por Dia (kg)')
+st.plotly_chart(fig2)
 
-fig_completo = px.line(df_exibir, x='data_dia', y=['Demanda Real (kg)', 'Previsão Diária (kg)', 'Previsão 3 Dias (kg)'],
-                       title='Demanda Real e Previsões (kg)')
-st.plotly_chart(fig_completo)
+st.subheader("🔮 Gráfico 3: Previsão de 3 Dias (kg)")
+fig3 = px.line(df_exibir, x='data_dia', y='Previsão 3 Dias (kg)', markers=True,
+               title='Previsão Média Móvel de 3 Dias (kg)')
+st.plotly_chart(fig3)
