@@ -35,7 +35,14 @@ if file:
     # 6. Calcula previsão com média móvel de 3 dias
     df_vendas['previsao_3dias'] = df_vendas['demanda_real'].rolling(window=3).mean()
 
-    # 7. Exibe o resultado
-    st.write(df_vendas[['data_dia', 'demanda_real', 'previsao_3dias']])
-else:
-    st.warning("Por favor, envie um arquivo CSV para começar.")
+    # Gráfico da demanda real ao longo do tempo
+fig_demanda = px.line(df_vendas, x='data_dia', y='demanda_real', title='Demanda Real por Dia')
+st.plotly_chart(fig_demanda)
+
+# Gráfico da previsão de 3 dias
+fig_previsao = px.line(df_vendas, x='data_dia', y='previsao_3dias', title='Previsão de Demanda (Média Móvel de 3 dias)')
+st.plotly_chart(fig_previsao)
+
+# Gráfico combinado de demanda real e previsão
+fig_combinado = px.line(df_vendas, x='data_dia', y=['demanda_real', 'previsao_3dias'], title='Demanda Real x Previsão')
+st.plotly_chart(fig_combinado)
