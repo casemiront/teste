@@ -2,7 +2,13 @@ import pandas as pd
 from datetime import timedelta
 
 # 1. Carrega o CSV (depois do upload no Colab)
-df_vendas = pd.read_csv('/content/vendas_filtradas_quantum.csv', sep=';')
+file = st.file_uploader("📁 Envie o arquivo de vendas (.csv)", type=['csv'])
+
+if file:
+    df_vendas = pd.read_csv(file, sep=';')
+    # ... continue o processamento normalmente
+else:
+    st.warning("Por favor, envie um arquivo CSV para começar.")
 
 # 2. Converte datas e ordena
 df_vendas['data_dia'] = pd.to_datetime(df_vendas['data_dia'])
